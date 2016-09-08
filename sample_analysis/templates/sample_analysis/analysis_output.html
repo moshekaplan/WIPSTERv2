@@ -1,0 +1,45 @@
+{% extends 'sample_analysis/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="tabs">
+        <div class="tab-links">
+            {% for tab in tabs %}
+                {% if forloop.first %}
+                   <li class="active"><a href="#{{tab.anchortext}}">{{tab.title}}</a></li>
+            	{% else %}
+                   <li><a href="#{{tab.anchortext}}">{{tab.title}}</a></li>
+            	{% endif %}
+            {% endfor %}
+        </div><!--end tab-links class-->
+        
+        {#Tab contents#}
+        
+        <div class="tab-data">
+            {% for tab in tabs %}
+                {% if forloop.first %}
+                    <div id="{{tab.anchortext}}" class="tab active">
+            	{% else %}
+                   <div id="{{tab.anchortext}}" class="tab">
+            	{% endif %}
+            	
+            	{% for group in tab.groups %}
+                	<h3>{{group.title}}</h3>
+		            <div class="data_group">
+                    	{% for entry in group.entries %}
+                    	    {%if entry.entry_type == "single" %}
+                                <p><b>{{ entry.title }}:</b> {{ entry.value }}</p>
+                            {% elif entry.entry_type == "multiline"%}
+                                <p><pre>{{ entry.value }}</pre></p>
+                            {% endif %}
+                        {% endfor %}
+		            </div>  <!--end {{group.title}} group-->
+                {% endfor %}		        
+            	
+            	</div> <!--end {{tab.title}} tab-->
+            {% endfor %}
+            
+
+    </div><!--end tabs class-->
+
+{% endblock %}

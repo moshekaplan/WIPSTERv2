@@ -1,3 +1,9 @@
+# Do not include sample files
+sample_analysis/samples/*
+
+# Ignore gedit temporary files
+*~
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
