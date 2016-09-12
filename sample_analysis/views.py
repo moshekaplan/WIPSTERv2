@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.http import Http404
 from django.utils import timezone
 from django.template.loader import render_to_string
 from django.shortcuts import render
@@ -86,7 +87,6 @@ def create_plaintext_report(sample, base_analysis, analysis_output):
                                     'sample':sample, 
                                     'base_analysis':base_analysis})
     return template
-    return "TODO"
 
     
 
@@ -95,7 +95,7 @@ def analysis_output(request, sha256):
     sample = Sample.objects.filter(sha256=sha256).first()
     base_analysis = BaseAnalysis.objects.filter(sample=sample).first()
     
-    # TODO: Generate 404s if necessary!
+    raise Http404("File with a sha256 of: '%s' is not in the database!" % sha256)
     
     analysis_output = AnalysisOutputDisplay()
     # Summary tab always goes first
