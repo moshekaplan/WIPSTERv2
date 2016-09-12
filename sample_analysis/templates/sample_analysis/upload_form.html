@@ -19,7 +19,7 @@
 		</div>
 		{% for sample in samples %}
 			<div class="row">
-				<span class="col-item"><a href="./md5/{{ sample.md5 }}/" title="{{ sample }}">{{ sample|truncatechars:22 }}</a></span>
+				<span class="col-item"><a href="./sample_analysis/md5/{{ sample.md5 }}/" title="{{ sample }}">{{ sample|truncatechars:22 }}</a></span>
 				<span class="col-item md5">{{ sample.md5 }}</span>
 				<span class="col-item ticket">{{ sample.ticket }}</span>
 				<span class="col-item">{{ sample.created }}</span>

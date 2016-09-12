@@ -89,15 +89,28 @@ def create_plaintext_report(sample, base_analysis, analysis_output):
     return template
 
     
-
-def analysis_output(request, sha256):
-    
+def display_report_by_sha256(request, sha256):
     sample = Sample.objects.filter(sha256=sha256).first()
     base_analysis = BaseAnalysis.objects.filter(sample=sample).first()
     
     if sample is None or base_analysis is None:
         raise Http404("File with a sha256 of: '%s' is not in the database!" % sha256)
+
+    return analysis_output(request, sample, base_analysis)
+
+
+def display_report_by_md5(request, md5):
+    sample = Sample.objects.filter(md5=md5).first()
+    base_analysis = BaseAnalysis.objects.filter(sample=sample).first()
     
+    if sample is None or base_analysis is None:
+        raise Http404("File with a md5 of: '%s' is not in the database!" % md5)
+
+    return analysis_output(request, sample, base_analysis)
+
+
+def analysis_output(request, sample, base_analysis):
+
     analysis_output = AnalysisOutputDisplay()
     # Summary tab always goes first
     tab_summary = analysis_output.add_tab("Summary")
