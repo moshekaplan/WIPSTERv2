@@ -1,0 +1,65 @@
+{% spaceless %}
+{{ sample.ticket }}, Analysis Complete, Non-Incident
+{{ sample.ticket }}, Analysis Complete, SPAM
+{{ sample.ticket }}, Analysis Complete, AV-Detected
+{{ sample.ticket }}, Analysis Complete, Malcode Detected
+
+Reason for Ticket/Alert         :
+
+{% if ta_domains %}DNS Callout                     :    {% for domain in ta_domains %}{{ domain }}  {% endfor %}{% endif %}
+{% if ta_ips     %}IP Callout                      :    {% for ip in ta_ips %}{{ ip }}  {% endfor %}{% endif %}
+
+File                            :    {{ sample.filename }}
+Type                            :    {{ base_analysis.filetype }}
+MD5                             :    {{ sample.md5 }}
+SHA1                            :    {{ sample.sha1 }}
+SHA256                          :    {{ sample.sha256 }}
+FUZZY                           :    {{ sample.ssdeep }}
+Size                            :    {{ sample.size }}
+Analyzed Date/Time              :    {{ sample.created }}
+
+CVE                             :
+
+Link(s)                         :
+
+Caught by AV (YES/NO)           :    {% if plaintext.vt_short %}YES{% endif %}
+                      VT        :    {% if plaintext.vt_nums %}{{ plaintext.vt_nums }}{% endif %}
+                      {% if plaintext.vt_short %}{% for res in plaintext.vt_short %}{{ res.vendor }}{{ res.detect }}
+                      {% endfor %}{% endif %}
+
+Email Info                      :
+
+--SUMMARY--
+
+
+
+--REMEDIATION STEPS--
+
+- False Positive
+
+- Block the following:
+        Block:
+        Justification:
+        
+- Search for successful callouts
+
+- Follow malicious email remediation procedures
+
+- Operational/Approved activity
+
+- Close ticket
+
+
+--NOTES--
+
+{% for tab in tabs %}
+#### {{tab.title}} ####
+
+{% for group in tab.groups %}## {{group.title}} ##
+
+{% for entry in group.entries %}{%if entry.entry_type == "single" %}{{ entry.title }}:{{ entry.value }}
+{% elif entry.entry_type == "multiline"%}{{ entry.value }}{% endif %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endspaceless %}
