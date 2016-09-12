@@ -100,14 +100,14 @@ def get_exif(fpath):
 
 def get_strings(fpath):
 
-    string_res = "#### ASCII ####\r\n\r\n"
+    string_res = "ASCII Strings:\r\n\r\n"
 
     run = subprocess.Popen(["strings",fpath],
                            stdout=subprocess.PIPE,
                            stdin=subprocess.PIPE)
 
     string_res += run.communicate()[0]
-    string_res += "\r\n#### UNICODE ####\r\n\r\n"
+    string_res += "\r\nUNICODE Strings:\r\n\r\n"
 
     run = subprocess.Popen(["strings","-e","l",fpath],
                            stdout=subprocess.PIPE,

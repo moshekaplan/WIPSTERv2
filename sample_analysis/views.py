@@ -1,16 +1,30 @@
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.utils import timezone
+from django.template.loader import render_to_string
 from django.shortcuts import render
 
 from .models import Sample, BaseAnalysis, PEAnalysis, PDFAnalysis, DOCAnalysis, RTFAnalysis, PluginAnalysis
 from .forms import UploadSampleForm
 
-import report_template
 
 
 def index(request):
     return HttpResponse("Sample Analysis index.")
+
+# Determine the type of file based on the filetype output
+def check_is_exe(filetype):
+    return "PE32" in filetype and "Windows" in filetype
+
+def check_is_pdf(filetype):
+    return "PDF" in filetype
+    
+def check_is_doc(filetype):
+    return "Document File V2" in filetype
+    
+def check_is_rtf(filetype):
+    return "Rich Text Format" in filetype
+
 
 # These classes are used for generating the output
 class Entry:
@@ -66,16 +80,23 @@ class AnalysisOutputDisplay:
         self.tabs.append(tab)
         return tab
 
-def create_plaintext_report(analysis):
-    template = report_template.report_template   
+def create_plaintext_report(sample, base_analysis, analysis_output):
+    template = render_to_string('sample_analysis/plaintext_report.html',
+                                {   'tabs':analysis_output.tabs, 
+                                    'sample':sample, 
+                                    'base_analysis':base_analysis})
+    return template
     return "TODO"
 
+    
 
 def analysis_output(request, sha256):
     
     sample = Sample.objects.filter(sha256=sha256).first()
     base_analysis = BaseAnalysis.objects.filter(sample=sample).first()
-
+    
+    # TODO: Generate 404s if necessary!
+    
     analysis_output = AnalysisOutputDisplay()
     # Summary tab always goes first
     tab_summary = analysis_output.add_tab("Summary")
@@ -116,10 +137,10 @@ def analysis_output(request, sha256):
     
     # Check the filetype to run type-specific analysis:
     filetype = base_analysis.filetype
-    is_exe = "PE32" in filetype and "Windows" in filetype
-    is_pdf = "PDF" in filetype
-    is_doc = "Document File V2" in filetype
-    is_rtf = "Rich Text Format" in filetype
+    is_exe = check_is_exe(filetype)
+    is_pdf = check_is_pdf(filetype)
+    is_doc = check_is_doc(filetype)
+    is_rtf = check_is_rtf(filetype)
     # Types are mutually exclusive
     assert sum([is_exe, is_pdf, is_doc, is_rtf]) < 2
 
@@ -175,7 +196,7 @@ def analysis_output(request, sha256):
     
             
     # The last tab is always the plaintext output:
-    plaintext_data = create_plaintext_report(analysis_output)
+    plaintext_data = create_plaintext_report(sample, base_analysis, analysis_output)
     
     tab_plaintext = analysis_output.add_tab("Plaintext")
     group_plaintext = tab_plaintext.add_group("Plaintext")
@@ -203,10 +224,10 @@ def upload_form(request):
         
         # Check the filetype to run type-specific analysis:
         filetype = base_analysis.filetype
-        is_exe = "PE32" in filetype and "Windows" in filetype
-        is_pdf = "PDF" in filetype
-        is_doc = "Document File V2" in filetype
-        is_rtf = "Rich Text Format" in filetype
+        is_exe = check_is_exe(filetype)
+        is_pdf = check_is_pdf(filetype)
+        is_doc = check_is_doc(filetype)
+        is_rtf = check_is_rtf(filetype)
         # Types are mutually exclusive
         assert sum([is_exe, is_pdf, is_doc, is_rtf]) < 2
 
