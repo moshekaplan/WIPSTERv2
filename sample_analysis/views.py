@@ -95,7 +95,8 @@ def analysis_output(request, sha256):
     sample = Sample.objects.filter(sha256=sha256).first()
     base_analysis = BaseAnalysis.objects.filter(sample=sample).first()
     
-    raise Http404("File with a sha256 of: '%s' is not in the database!" % sha256)
+    if sample is None or base_analysis is None:
+        raise Http404("File with a sha256 of: '%s' is not in the database!" % sha256)
     
     analysis_output = AnalysisOutputDisplay()
     # Summary tab always goes first
