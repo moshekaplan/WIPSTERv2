@@ -4,10 +4,14 @@
 {{ sample.ticket }}, Analysis Complete, AV-Detected
 {{ sample.ticket }}, Analysis Complete, Malcode Detected
 
-Reason for Ticket/Alert         :
+Reason for Ticket/Alert : Suspicious Email
 
-{% if ta_domains %}DNS Callout                     :    {% for domain in ta_domains %}{{ domain }}  {% endfor %}{% endif %}
-{% if ta_ips     %}IP Callout                      :    {% for ip in ta_ips %}{{ ip }}  {% endfor %}{% endif %}
+--Email Info--
+Sender    :
+Time Sent : 
+Subject   : 
+
+--File Info--
 
 File                            :    {{ sample.filename }}
 Type                            :    {{ base_analysis.filetype }}
@@ -17,40 +21,54 @@ SHA256                          :    {{ sample.sha256 }}
 FUZZY                           :    {{ sample.ssdeep }}
 Size                            :    {{ sample.size }}
 Analyzed Date/Time              :    {{ sample.created }}
-
 CVE                             :
+VirusTotal                      :
 
-Link(s)                         :
+--Links--
+Link(s):
+
+
 
 Caught by AV (YES/NO)           :    {% if plaintext.vt_short %}YES{% endif %}
                       VT        :    {% if plaintext.vt_nums %}{{ plaintext.vt_nums }}{% endif %}
                       {% if plaintext.vt_short %}{% for res in plaintext.vt_short %}{{ res.vendor }}{{ res.detect }}
                       {% endfor %}{% endif %}
 
-Email Info                      :
 
---SUMMARY--
+{% if ta_domains %}DNS Callout                     :    {% for domain in ta_domains %}{{ domain }}  {% endfor %}{% endif %}
+{% if ta_ips     %}IP Callout                      :    {% for ip in ta_ips %}{{ ip }}  {% endfor %}{% endif %}
 
 
 
---REMEDIATION STEPS--
+--Summary--
+
+A user submitted the following email for analysis. 
+The email sender was <EMAIL SENDER>.
+The email was sent by <EMAIL SERVER>, registered to <OWNER OF IP ADDRESS OF EMAIL SERVER>.
+
+The email did not contain any attachments 
+The email contained an attached file. CIRT analyzed the attachment and ...
+
+The email did not contain any URLs.
+The email contained a link to <target>. CIRT examined the URL and ...
+
+<AFFECTED USERS> users received the email.
+
+<NUMBER OF VISITORS>/No users clicked on the link.
+
+--Remediation--
 
 - False Positive
 
 - Block the following:
-        Block:
-        Justification:
-        
-- Search for successful callouts
+    Block:          <DOMAIN>
+    Justification:  Phishing domain
 
-- Follow malicious email remediation procedures
+- Block the following:
+    Block:          email[@]domain.tld
+    Justification:  Multiple phishing emails
 
-- Operational/Approved activity
-
-- Close ticket
-
-
---NOTES--
+--Analysis Notes--
 
 {% for tab in tabs %}
 #### {{tab.title}} ####
